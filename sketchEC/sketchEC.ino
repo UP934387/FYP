@@ -11,9 +11,19 @@ DFRobot_IICSerial iicSerial1(Wire, /*subUartChannel =*/SUBUART_CHANNEL_1,/*IA1 =
 // E      | Stop Reading / Standby
 // X      | Factory Reset
 // I      | Device Info
+// P,1    | Set Sensor to K0.1
+// P,2    | Set Sensor to K1.0
+// P,3    | Set Sensor to K10.0
+// Z0     | Dry Calibration
+// Z2     | Calibration 220us (K0.1)
+// Z30    | Calibration 3,000us (K0.1)
+// Z10    | Calibration 10,500us (K1.0)
+// Z40    | Calibration 40,000us (K1.0)
+// Z62    | Calibration 62,000us (K10.0)
+// Z90    | Calibration 90,000us (K10.0)
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(38400); /*to host device serial (Pi/PC)*/
 
   iicSerial1.begin(/*baud = */38400);/*UART1 init*/
   sendECCommand((char*) "C"); /* send pointer to char array*/
