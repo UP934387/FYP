@@ -8,7 +8,6 @@ OneWire ds(DS18S20_Pin);
 
 void setup(void) {
   Serial.begin(9600);
-  iicSerial1.begin(9600);/*UART1 init*/
 }
 
 void loop(void) {
