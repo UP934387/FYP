@@ -1,10 +1,16 @@
+#include "generic_functions.h"
 #include "relay_functions.h"
 #include <neotimer.h>
 
-#define RELAYS 6
+#define MINTIME 1000l
 
-long RelayMaxEnable[RELAYS] = {10000, 10000, 10000, 10000, 10000, 10000};
-int RelayID2Pin[RELAYS] = {4, 5, 6, 7, 8, 9};
+Relay Relays[] = {4, 1000,
+                  5, 1000,
+                  6, 1000,
+                  7, 1000,
+                  8, 1000,
+                  9, 1000
+                 };
 
 // 4 - 12V - dose pump
 // 5 - 12V - dose pump
@@ -15,24 +21,50 @@ int RelayID2Pin[RELAYS] = {4, 5, 6, 7, 8, 9};
 
 Neotimer RelayTimers[RELAYS];
 
+void debugRelayData() {
+  for (int j = 0; j < RELAYS; j++) {
+    Serial.print("Relay: ");
+    Serial.print(j);
+    Serial.print("|Pin: ");
+    Serial.print(Relays[j].pin);
+    Serial.print("|Timer: ");
+    Serial.println(Relays[j].maxTimer);
+  }
+}
+
+void relayMain(String command, String input) {
+  String data1, data2;
+
+  data1 = getValue(input, '|', 0);
+  data2 = getValue(input, '|', 1);
+
+  if (command == "enable") {
+    enableRelay(data1.toInt());
+  }
+  else if (command == "disable") {
+    disableRelay(data1.toInt());
+  }
+  else if (command == "timer") {
+    updateTimer(data1.toInt(), atol(data2.c_str()));
+  }
+}
+
 void enableRelay(int id) {
-  //Serial.print(id);
-  //Serial.println("Enable");
   if (id >= 0 && id < RELAYS) {
-    digitalWrite(RelayID2Pin[id], HIGH);
-    RelayTimers[id] = Neotimer(RelayMaxEnable[id]);
+    digitalWrite(Relays[id].pin, HIGH);
+    RelayTimers[id] = Neotimer(Relays[id].maxTimer);
     RelayTimers[id].start();
-    Serial.println("Relay Enable");
+    Serial.print("Relay Enable :");
+    Serial.println(id);
   }
 }
 
 void disableRelay(int id) {
-  //Serial.print(id);
-  //Serial.println("Disable");
   if (id >= 0 && id < RELAYS) {
-    digitalWrite(RelayID2Pin[id], LOW);
+    digitalWrite(Relays[id].pin, LOW);
     RelayTimers[id].reset();
-    Serial.println("Relay Disable");
+    Serial.print("Relay Disable :");
+    Serial.println(id);
   }
 }
 
@@ -40,8 +72,17 @@ void loopRelays() {
   for (int i = 0; i < RELAYS; i++) {
     if (RelayTimers[i].done()) {
       disableRelay(i);
-      //Serial.print(i);
-      Serial.println("Relay auto stop");
     }
+  }
+}
+
+void updateTimer (int id, long newTime) {
+  if (id >= 0 && id < RELAYS && newTime >= MINTIME) {
+    Relays[id].maxTimer = newTime;
+    Serial.print("Relay:");
+    Serial.print(id);
+    Serial.print("|Timer:");
+    Serial.println(newTime);
+    writeEEPROM();
   }
 }
