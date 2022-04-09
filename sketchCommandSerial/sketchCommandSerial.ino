@@ -3,6 +3,7 @@
 #include "generic_functions.h"
 #include "temp_functions.h"
 #include "level_functions.h"
+#include "psi_functions.h"
 
 
 void setup() {
@@ -39,8 +40,9 @@ void loop() {
       relayMain(inputs[1], inputs[2]);
     }
     else if (inputs[0] == "configec") {
-      char buf[inputs[1].length() + 1];
-      inputs[1].toCharArray(buf, inputs[1].length() + 1);
+      int bufSize = inputs[1].length() + 1;
+      char buf[bufSize];
+      inputs[1].toCharArray(buf, bufSize);
       char* dataptr;
       dataptr = buf;
       sendECCommand(dataptr);
@@ -65,8 +67,8 @@ void loop() {
 
 
   loopRelays();
-  float temp = getTemp();
-  int level = getLevel();
+  float temp = getTemp(0);
+  int level = getLevel(0);
   String ec = loopEC();
   if (ec != "") {
     Serial.println(ec);

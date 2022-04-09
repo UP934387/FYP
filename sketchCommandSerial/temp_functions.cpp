@@ -4,11 +4,10 @@
 TempSensor TempSensors[] = {15};
 
 
-OneWire ds(TempSensors[0].pin);
 
 
-
-float getTemp(){
+float getTemp(int id){
+  OneWire ds(TempSensors[id].pin);
   //returns the temperature from one DS18S20 in DEG Celsius
 
   byte data[12];
