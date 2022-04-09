@@ -21,37 +21,40 @@ void setup() {
 
 
 void loop() {
-  String input, command, data, extra;
+  String input;
+  String inputs[3];
+  int i = 0;
 
   if (Serial.available())  {
     input = Serial.readStringUntil('\n');
-    command = getValue(input, ';', 0);
-    data = getValue(input, ';', 1);
-    extra = getValue(input, ';', 2);
-
-    if (command == "sensorsread") {
+    while(getValue(input, ';', i) != NULL) {
+      inputs[i] = getValue(input, ';', i);
+      i++;
+      }
+      
+    if (inputs[0] == "sensorsread") {
 
     }
-    else if (command == "configrelay") {
-      relayMain(data, extra);
+    else if (inputs[0] == "configrelay") {
+      relayMain(inputs[1], inputs[2]);
     }
-    else if (command == "configec") {
-      char buf[data.length() + 1];
-      data.toCharArray(buf, data.length() + 1);
+    else if (inputs[0] == "configec") {
+      char buf[inputs[1].length() + 1];
+      inputs[1].toCharArray(buf, inputs[1].length() + 1);
       char* dataptr;
       dataptr = buf;
       sendECCommand(dataptr);
     }
-    else if (command == "configph") {
-      Serial.println(data);
+    else if (inputs[0] == "configph") {
+      Serial.println(inputs[1]);
     }
-    else if (command == "configpsi") {
-      Serial.println(data);
+    else if (inputs[0] == "configpsi") {
+      Serial.println(inputs[1]);
     }
-    else if (command == "readeeprom") {
+    else if (inputs[0] == "readeeprom") {
       readEEPROM();
     }
-    else if (command == "dbg") {
+    else if (inputs[0] == "dbg") {
       debugECData();
       debugRelayData();
     }
