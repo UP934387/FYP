@@ -3,8 +3,8 @@
 
 LevelSensor LevelSensors[] = {14};
 
-int getLevel(){
-  int level = digitalRead(LevelSensors[0].pin);
+int getLevel(int id){
+  int level = digitalRead(LevelSensors[id].pin);
   //Serial.println(level);
   return level;
   }

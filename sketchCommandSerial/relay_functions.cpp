@@ -33,7 +33,6 @@ void debugRelayData() {
 }
 
 void relayMain(String command, String input) {
-  String input;
   String inputs[2];
   int i = 0;
 
