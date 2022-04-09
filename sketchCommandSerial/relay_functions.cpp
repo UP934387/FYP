@@ -33,19 +33,23 @@ void debugRelayData() {
 }
 
 void relayMain(String command, String input) {
-  String data1, data2;
+  String input;
+  String inputs[2];
+  int i = 0;
 
-  data1 = getValue(input, '|', 0);
-  data2 = getValue(input, '|', 1);
+  while (getValue(input, '|', i) != NULL) {
+    inputs[i] = getValue(input, '|', i);
+    i++;
+  }
 
   if (command == "enable") {
-    enableRelay(data1.toInt());
+    enableRelay(inputs[0].toInt());
   }
   else if (command == "disable") {
-    disableRelay(data1.toInt());
+    disableRelay(inputs[0].toInt());
   }
   else if (command == "timer") {
-    updateTimer(data1.toInt(), atol(data2.c_str()));
+    updateTimer(inputs[0].toInt(), atol(inputs[1].c_str()));
   }
 }
 
