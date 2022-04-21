@@ -14,6 +14,8 @@ struct PsiSensor {
 
 extern PsiSensor PsiSensors[PRES];
 
+void debugPSIData();
 float getPSI();
+void configSensor(int id, PsiSensor newPsiSensor);
 
 #endif

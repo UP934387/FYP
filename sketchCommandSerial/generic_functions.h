@@ -5,6 +5,7 @@
 #include "ec_functions.h"
 #include "temp_functions.h"
 #include "level_functions.h"
+#include "psi_functions.h"
 
 
 struct EEPROMstructure {
@@ -12,6 +13,8 @@ struct EEPROMstructure {
   ECSensor EEPROM_ECsensors[ECS];
   TempSensor EEPROM_TempSensors[TEMPS];
   LevelSensor EEPROM_LevelSensors[LEVELS];
+  PsiSensor EEPROM_PsiSensors[PRES];
+  PhSensor EEPROM_PhSensors[PH];
 };
 
 void writeEEPROM();

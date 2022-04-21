@@ -10,6 +10,7 @@ struct TempSensor {
 
 extern TempSensor TempSensors[TEMPS];
 
-float getTemp(int id);
+void debugTempData();
+float getTemp();
 
 #endif
