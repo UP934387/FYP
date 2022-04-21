@@ -27,19 +27,19 @@ DFRobot_IICSerial iicSerial1(Wire, ECSensors[0].subUartChannel, ECSensors[0].IA1
 // Z90    | Calibration 90,000us (K10.0)
 
 void debugECData() {
-  for (int j = 0; j < ECS; j++) {
+  for (int i = 0; i < ECS; i++) {
     Serial.print("EC: ");
-    Serial.print(j);
+    Serial.print(i);
     Serial.print("|SDA: ");
-    Serial.print(ECSensors[j].SDA);
+    Serial.print(ECSensors[i].SDA);
     Serial.print("|SCL: ");
-    Serial.print(ECSensors[j].SCL);
+    Serial.print(ECSensors[i].SCL);
     Serial.print("|IA0: ");
-    Serial.print(ECSensors[j].IA0);
+    Serial.print(ECSensors[i].IA0);
     Serial.print("|IA1: ");
-    Serial.print(ECSensors[j].IA1);
+    Serial.print(ECSensors[i].IA1);
     Serial.print("|subUartChannel: ");
-    Serial.println(ECSensors[j].subUartChannel);
+    Serial.println(ECSensors[i].subUartChannel);
   }
 }
 
@@ -48,7 +48,7 @@ void setupEC() {
   iicSerial1.begin(38400);/*UART1 init*/
 }
 
-String loopEC() {
+String getECResponse() {
   if (iicSerial1.available()) {
     String ecData = getECSensor();
     return ecData;

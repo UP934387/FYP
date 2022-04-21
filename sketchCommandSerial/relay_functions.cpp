@@ -4,12 +4,14 @@
 
 #define MINTIME 1000l
 
-Relay Relays[] = {4, 1000,
-                  5, 1000,
-                  6, 1000,
-                  7, 1000,
-                  8, 1000,
-                  9, 1000
+#define MAXINPUT 2
+
+Relay Relays[] = {4, 1000, false,
+                  5, 1000, false,
+                  6, 1000, false,
+                  7, 1000, false,
+                  8, 1000, false,
+                  9, 1000, false
                  };
 
 // 4 - 12V - dose pump
@@ -22,21 +24,23 @@ Relay Relays[] = {4, 1000,
 Neotimer RelayTimers[RELAYS];
 
 void debugRelayData() {
-  for (int j = 0; j < RELAYS; j++) {
+  for (int i = 0; i < RELAYS; i++) {
     Serial.print("Relay: ");
-    Serial.print(j);
+    Serial.print(i);
     Serial.print("|Pin: ");
-    Serial.print(Relays[j].pin);
+    Serial.print(Relays[i].pin);
     Serial.print("|Timer: ");
-    Serial.println(Relays[j].maxTimer);
+    Serial.println(Relays[i].maxTimer);
+    Serial.print("|auto: ");
+    Serial.println(Relays[i].automatic);
   }
 }
 
 void relayMain(String command, String input) {
-  String inputs[2];
+  String inputs[MAXINPUT];
   int i = 0;
 
-  while (getValue(input, '|', i) != NULL) {
+  while (getValue(input, '|', i) != NULL && i < MAXINPUT) {
     inputs[i] = getValue(input, '|', i);
     i++;
   }
@@ -50,6 +54,10 @@ void relayMain(String command, String input) {
   else if (command == "timer") {
     updateTimer(inputs[0].toInt(), atol(inputs[1].c_str()));
   }
+  else if (command == "auto") {
+    toggleAuto(inputs[0].toInt());
+  }
+  else {Serial.println("invalid relay command");}
 }
 
 void enableRelay(int id) {
@@ -74,7 +82,13 @@ void disableRelay(int id) {
 void loopRelays() {
   for (int i = 0; i < RELAYS; i++) {
     if (RelayTimers[i].done()) {
-      disableRelay(i);
+      if (Relays[i].automatic) {
+        RelayTimers[i].start();
+        digitalWrite(Relays[i].pin, !digitalRead(Relays[i].pin));
+        // invert current output 
+      } else {
+        disableRelay(i);
+      }
     }
   }
 }
@@ -86,6 +100,17 @@ void updateTimer (int id, long newTime) {
     Serial.print(id);
     Serial.print("|Timer:");
     Serial.println(newTime);
+    writeEEPROM();
+  }
+}
+
+void toggleAuto(int id) {
+  if (id >= 0 && id < RELAYS) {
+    Relays[id].automatic = !Relays[id].automatic;
+    Serial.print("Relay:");
+    Serial.print(id);
+    Serial.print("|Auto:");
+    Serial.println(Relays[id].automatic);
     writeEEPROM();
   }
 }

@@ -7,6 +7,7 @@
 struct Relay {
   int pin;
   long maxTimer;
+  bool automatic;
 };
 
 extern Relay Relays[RELAYS];
@@ -17,5 +18,6 @@ void disableRelay(int id);
 void loopRelays();
 void updateTimer (int id, long newTime);
 void relayMain(String command, String input);
+void toggleAuto(int id);
 
 #endif

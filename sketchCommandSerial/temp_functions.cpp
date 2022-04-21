@@ -3,35 +3,44 @@
 
 TempSensor TempSensors[] = {15};
 
+OneWire ds(TempSensors[0].pin);
+
+void debugTempData() {
+  for (int i = 0; i < TEMPS; i++) {
+    Serial.print("Temp: ");
+    Serial.print(i);
+    Serial.print("|Pin: ");
+    Serial.print(TempSensors[i].pin);
+  }
+}
 
 
+float getTemp() {
 
-float getTemp(int id){
-  OneWire ds(TempSensors[id].pin);
   //returns the temperature from one DS18S20 in DEG Celsius
 
   byte data[12];
   byte addr[8];
 
   if ( !ds.search(addr)) {
-      //no more sensors on chain, reset search
-      ds.reset_search();
-      return -1000;
+    //no more sensors on chain, reset search
+    ds.reset_search();
+    return -1000;
   }
 
   if ( OneWire::crc8( addr, 7) != addr[7]) {
-      //Serial.println("CRC is not valid!");
-      return -1000;
+    //Serial.println("CRC is not valid!");
+    return -1000;
   }
 
   if ( addr[0] != 0x10 && addr[0] != 0x28) {
-      //Serial.print("Device is not recognized");
-      return -1000;
+    //Serial.print("Device is not recognized");
+    return -1000;
   }
 
   ds.reset();
   ds.select(addr);
-  ds.write(0x44,1); // start conversion, with parasite power on at the end
+  ds.write(0x44, 1); // start conversion, with parasite power on at the end
 
   byte present = ds.reset();
   ds.select(addr);

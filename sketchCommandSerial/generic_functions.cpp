@@ -1,7 +1,7 @@
 #include <EEPROM.h>
 #include "generic_functions.h"
 
-byte EEPROMINIT = 102;
+byte EEPROMINIT = 104;
 // used to check if EEPROM has valid config. change if EEPROM Struct changes
 
 void writeEEPROM() {
@@ -19,6 +19,12 @@ void writeEEPROM() {
   };
   for (int l = 0; l < LEVELS; l++) {
     writeEEPROM.EEPROM_LevelSensors[l] = LevelSensors[l];
+  };
+  for (int m = 0; m < PRES; m++) {
+    writeEEPROM.EEPROM_PsiSensors[m] = PsiSensors[m];
+  };
+  for (int n = 0; m < PH; n++) {
+    writeEEPROM.EEPROM_PhSensors[n] = PhSensors[n];
   };
   EEPROM.put(0, EEPROMINIT);
   EEPROM.put(1, writeEEPROM);
@@ -42,6 +48,12 @@ void readEEPROM() {
   };
   for (int l = 0; l < LEVELS; l++) {
     LevelSensors[l] = readEEPROM.EEPROM_LevelSensors[l];
+  };
+  for (int m = 0; m < PRES; m++) {
+    PsiSensors[m] = readEEPROM.EEPROM_PsiSensors[m];
+  };
+  for (int n = 0; m < PRES; n++) {
+    PhSensors[n] = readEEPROM.EEPROM_PhSensors[n];
   };
 }
 

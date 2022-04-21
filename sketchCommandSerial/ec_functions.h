@@ -16,7 +16,7 @@ extern ECSensor ECSensors[ECS];
 
 void debugECData();
 void setupEC();
-String loopEC();
+String getECResponse();
 void sendECCommand(char* pCommand);
 String getECSensor();
 

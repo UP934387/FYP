@@ -10,6 +10,7 @@ struct LevelSensor {
 
 extern LevelSensor LevelSensors[LEVELS];
 
+void debugLevelData();
 int getLevel(int id);
 
 #endif
