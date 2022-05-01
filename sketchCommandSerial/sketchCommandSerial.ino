@@ -107,4 +107,7 @@ void loop() {
   sendECCommand(buffer);
   ec = getECResponse();
 
+  if (psi >= 90) {
+    disableRelay(4);
+    }
 }
