@@ -14,18 +14,23 @@ void debugPhData() {
     Serial.print("Ph: ");
     Serial.print(i);
     Serial.print("|Pin: ");
-    Serial.print(PhSensors[i].pin);
+    Serial.println(PhSensors[i].pin);
   }
 }
 
 float getPh(float temperature) {
-  voltage = analogRead(PhSensors[0].pin) / 1024.0 * 5000; // read the voltage
-  phValue = phsen.readPH(voltage, temperature); // convert voltage to pH with temperature compensation
+  // Read Voltage from Ph Sensor pin 
+  voltage = analogRead(PhSensors[0].pin) / 1024.0 * 5000;
+  // voltage & tempature converted by DFROBOT_PH Libary to Ph value
+  phValue = phsen.readPH(voltage, temperature);
 
   return phValue;
 }
 
 void caliPh(float temperature, char* dataptr){
-  voltage = analogRead(PhSensors[0].pin) / 1024.0 * 5000; // read the voltage
+  // Read Voltage from Ph Sensor pin 
+  voltage = analogRead(PhSensors[0].pin) / 1024.0 * 5000;
+  // using voltage & tempature to caliebrate.
+  // commands are enterph, calph, exitph
   phsen.calibration(voltage,temperature,dataptr);
   }

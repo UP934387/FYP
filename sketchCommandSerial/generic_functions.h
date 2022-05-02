@@ -6,6 +6,7 @@
 #include "temp_functions.h"
 #include "level_functions.h"
 #include "psi_functions.h"
+#include "ph_functions.h"
 
 
 struct EEPROMstructure {
@@ -20,6 +21,8 @@ struct EEPROMstructure {
 void writeEEPROM();
 void readEEPROM();
 void loadConfig();
+void setupgpio();
+void displaySensors(float temp, int level, float ph, String ec, float psi);
 String getValue(String data, char separator, int index);
 
 #endif

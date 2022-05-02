@@ -8,7 +8,7 @@ void debugLevelData() {
     Serial.print("Level: ");
     Serial.print(i);
     Serial.print("|Pin: ");
-    Serial.print(LevelSensors[i].pin);
+    Serial.println(LevelSensors[i].pin);
   }
 }
 
