@@ -39,16 +39,7 @@ void loop() {
     }
 
     if (inputs[0] == "sensorsread") {
-      Serial.print("Temp:");
-      Serial.print(temp);
-      Serial.print("Level:");
-      Serial.print(level);
-      Serial.print("Ph:");
-      Serial.print(ph);
-      Serial.print("Ec:");
-      Serial.print(ec);
-      Serial.print("PSI:");
-      Serial.println(psi);
+      displaySensors(temp, level, ph, ec, psi);
     }
     else if (inputs[0] == "relay") {
       relayMain(inputs[1], inputs[2]);

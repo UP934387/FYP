@@ -18,7 +18,7 @@ void debugPSIData() {
     Serial.print("|vRange: ");
     Serial.print(PsiSensors[i].vRange);
     Serial.print("|vOffset: ");
-    Serial.print(PsiSensors[i].vOffset);
+    Serial.println(PsiSensors[i].vOffset);
   }
 }
 
@@ -27,7 +27,7 @@ float getPSI() {
   V = analogRead(PsiSensors[0].pin) * vPinMax / 1024;     //Sensor output voltage
   P = (V - PsiSensors[0].vOffset) * PsiSensors[0].PSImax / PsiSensors[0].vRange;     //Calculate water pressure
 
-  return P;
+  return (P < PsiSensors[0].PSImin) ? PsiSensors[0].PSImin : P; // prevent psi reading below min value
 }
 
 void configSensor(int id, PsiSensor newPsiSensor ) {

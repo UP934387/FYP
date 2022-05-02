@@ -10,55 +10,46 @@ void debugTempData() {
     Serial.print("Temp: ");
     Serial.print(i);
     Serial.print("|Pin: ");
-    Serial.print(TempSensors[i].pin);
+    Serial.println(TempSensors[i].pin);
   }
 }
 
 
 float getTemp() {
-
-  //returns the temperature from one DS18S20 in DEG Celsius
-
   byte data[12];
   byte addr[8];
-
-  if ( !ds.search(addr)) {
-    //no more sensors on chain, reset search
+  if (!ds.search(addr)) {
+    //no sensors, reset search
     ds.reset_search();
     return -1000;
   }
-
-  if ( OneWire::crc8( addr, 7) != addr[7]) {
-    //Serial.println("CRC is not valid!");
+  else if ( OneWire::crc8(addr, 7) != addr[7]) {
+    //invalid crc
     return -1000;
   }
-
-  if ( addr[0] != 0x10 && addr[0] != 0x28) {
-    //Serial.print("Device is not recognized");
+  else if (addr[0] != 0x10 && addr[0] != 0x28) {
+    //unknown device
     return -1000;
   }
 
   ds.reset();
   ds.select(addr);
-  ds.write(0x44, 1); // start conversion, with parasite power on at the end
-
+  // start conversion
+  ds.write(0x44, 1);
   byte present = ds.reset();
   ds.select(addr);
-  ds.write(0xBE); // Read Scratchpad
+  // Read buffer
+  ds.write(0xBE);
 
-
-  for (int i = 0; i < 9; i++) { // we need 9 bytes
+  for (int i = 0; i < 9; i++) { 
+    //need 9 bytes
     data[i] = ds.read();
   }
-
   ds.reset_search();
+  
+  //two's compliment
+  float temp16 = ((data[1] << 8) | data[0]); 
+  float temperature = temp16 / 16;
 
-  byte MSB = data[1];
-  byte LSB = data[0];
-
-  float tempRead = ((MSB << 8) | LSB); //using two's compliment
-  float TemperatureSum = tempRead / 16;
-
-  return TemperatureSum;
-
+  return temperature;
 }

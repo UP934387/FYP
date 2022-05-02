@@ -23,7 +23,7 @@ void writeEEPROM() {
   for (int m = 0; m < PRES; m++) {
     writeEEPROM.EEPROM_PsiSensors[m] = PsiSensors[m];
   };
-  for (int n = 0; m < PH; n++) {
+  for (int n = 0; n < PH; n++) {
     writeEEPROM.EEPROM_PhSensors[n] = PhSensors[n];
   };
   EEPROM.put(0, EEPROMINIT);
@@ -52,9 +52,34 @@ void readEEPROM() {
   for (int m = 0; m < PRES; m++) {
     PsiSensors[m] = readEEPROM.EEPROM_PsiSensors[m];
   };
-  for (int n = 0; m < PRES; n++) {
+  for (int n = 0; n < PRES; n++) {
     PhSensors[n] = readEEPROM.EEPROM_PhSensors[n];
   };
+}
+
+void setupgpio() {
+  for (int i = 0; i < RELAYS; i++) {
+    pinMode(Relays[i].pin, OUTPUT);
+  };
+  for (int k = 0; k < TEMPS; k++) {
+    pinMode(TempSensors[k].pin, INPUT);
+  };
+  for (int l = 0; l < LEVELS; l++) {
+    pinMode(LevelSensors[l].pin, INPUT);
+  };
+}
+
+void displaySensors(float temp, int level, float ph, String ec, float psi) {
+  Serial.print("Temp:");
+  Serial.print(temp);
+  Serial.print("|Level:");
+  Serial.print(level);
+  Serial.print("|Ph:");
+  Serial.print(ph);
+  Serial.print("|Ec:");
+  Serial.print(ec);
+  Serial.print("|PSI:");
+  Serial.println(psi);
 }
 
 void loadConfig() {
@@ -63,6 +88,7 @@ void loadConfig() {
   if (key == EEPROMINIT) {
     Serial.println("Valid Config Detected");
     readEEPROM();
+    setupgpio();
   }
   else {
     Serial.println("No Config Detected");
