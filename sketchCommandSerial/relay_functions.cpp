@@ -14,18 +14,18 @@ Relay Relays[] = {4, 1000, false,
                   9, 1000, false
                  };
 
-// 4 - 12V - dose pump
-// 5 - 12V - dose pump
-// 6 - 12V - dose pump
-// 7 - 12V - solenoid valve
-// 8 - 24v - Main pump
-// 9 - 24v - N/A
+// 4 1- 12V - dose pump
+// 5 2- 12V - dose pump
+// 6 3- 12V - dose pump
+// 7 4- 12V - solenoid valve
+// 8 5- 24v - Main pump
+// 9 6- 24v - N/A
 
 Neotimer RelayTimers[RELAYS];
 
 void debugRelayData() {
   for (int i = 0; i < RELAYS; i++) {
-    Serial.print("Relay: ");
+    Serial.print("#Relay: ");
     Serial.print(i);
     Serial.print("|Pin: ");
     Serial.print(Relays[i].pin);
@@ -57,15 +57,15 @@ void relayMain(String command, String input) {
   else if (command == "auto") {
     toggleAuto(inputs[0].toInt());
   }
-  else {Serial.println("invalid relay command");}
+  else {Serial.println("Invalid relay command");}
 }
 
 void enableRelay(int id) {
-  if (id >= 0 && id < RELAYS) {
+  if (id >= 0 && id < RELAYS && !RelayTimers[id].waiting()) {
     digitalWrite(Relays[id].pin, HIGH);
     RelayTimers[id] = Neotimer(Relays[id].maxTimer);
     RelayTimers[id].start();
-    Serial.print("Relay Enable :");
+    Serial.print("#Relay Enable :");
     Serial.println(id);
   }
 }
@@ -74,7 +74,7 @@ void disableRelay(int id) {
   if (id >= 0 && id < RELAYS) {
     digitalWrite(Relays[id].pin, LOW);
     RelayTimers[id].reset();
-    Serial.print("Relay Disable :");
+    Serial.print("#Relay Disable :");
     Serial.println(id);
   }
 }
@@ -96,7 +96,7 @@ void loopRelays() {
 void updateTimer (int id, long newTime) {
   if (id >= 0 && id < RELAYS && newTime >= MINTIME) {
     Relays[id].maxTimer = newTime;
-    Serial.print("Relay:");
+    Serial.print("#Relay:");
     Serial.print(id);
     Serial.print("|Timer:");
     Serial.println(newTime);
@@ -107,7 +107,7 @@ void updateTimer (int id, long newTime) {
 void toggleAuto(int id) {
   if (id >= 0 && id < RELAYS) {
     Relays[id].automatic = !Relays[id].automatic;
-    Serial.print("Relay:");
+    Serial.print("#Relay:");
     Serial.print(id);
     Serial.print("|Auto:");
     Serial.println(Relays[id].automatic);

@@ -11,7 +11,7 @@ void setupPH() {
 
 void debugPhData() {
   for (int i = 0; i < PH; i++) {
-    Serial.print("Ph: ");
+    Serial.print("#Ph: ");
     Serial.print(i);
     Serial.print("|Pin: ");
     Serial.println(PhSensors[i].pin);

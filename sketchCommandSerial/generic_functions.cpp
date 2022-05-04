@@ -5,7 +5,7 @@ byte EEPROMINIT = 104;
 // used to check if EEPROM has valid config. change if EEPROM Struct changes
 
 void writeEEPROM() {
-  Serial.println("EEPROM WROTE");
+  Serial.println("#EEPROM WROTE");
   EEPROMstructure writeEEPROM;
 
   for (int i = 0; i < RELAYS; i++) {
@@ -32,7 +32,7 @@ void writeEEPROM() {
 
 
 void readEEPROM() {
-  Serial.println("EEPROM READ");
+  Serial.println("#EEPROM READ");
   EEPROMstructure readEEPROM;
 
   EEPROM.get(1, readEEPROM);
@@ -86,12 +86,12 @@ void loadConfig() {
   byte key;
   EEPROM.get(0, key);
   if (key == EEPROMINIT) {
-    Serial.println("Valid Config Detected");
+    Serial.println("#Valid Config Detected");
     readEEPROM();
     setupgpio();
   }
   else {
-    Serial.println("No Config Detected");
+    Serial.println("#No Config Detected");
     writeEEPROM();
   }
 }
@@ -99,16 +99,22 @@ void loadConfig() {
 String getValue(String data, char separator, int index)
 {
   int found = 0;
-  int strIndex[] = {0, -1};
-  int maxIndex = data.length() - 1;
+  // start (0) to end (-1) of String
+  int seperatorIndex[] = {0, -1};
+  int limit = data.length() - 1;
 
-  for (int i = 0; i <= maxIndex && found <= index; i++) {
-    if (data.charAt(i) == separator || i == maxIndex) {
+  for (int i = 0; i <= limit && found <= index; i++) {
+    // loop until limit and have found the index of word requested
+    if (data.charAt(i) == separator || i == limit) {
+      // found seperator in String. or reached end of String
+      // increment number of found words
       found++;
-      strIndex[0] = strIndex[1] + 1;
-      strIndex[1] = (i == maxIndex) ? i + 1 : i;
+      // update index of seperator 0 (start)
+      seperatorIndex[0] = seperatorIndex[1] + 1;
+      // update index of seperator 1 to loop index (end)
+      seperatorIndex[1] = (i == limit) ? i + 1 : i;
     }
   }
-
-  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+  // return if the word between seperators if found
+  return found > index ? data.substring(seperatorIndex[0], seperatorIndex[1]) : "";
 }
