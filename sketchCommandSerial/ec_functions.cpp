@@ -31,7 +31,7 @@ DFRobot_IICSerial iicSerial1(Wire, ECSensors[0].subUartChannel,
 
 void debugECData() {
   for (int i = 0; i < ECS; i++) {
-    Serial.print("EC: ");
+    Serial.print("#EC: ");
     Serial.print(i);
     Serial.print("|SDA: ");
     Serial.print(ECSensors[i].SDA);

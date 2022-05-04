@@ -8,6 +8,10 @@
 
 #define MAXINPUT 3
 
+#define MINPRESSURE 60
+#define MAXPRESSURE 90
+#define EPRESSURE 105
+
 void setup() {
   Serial.begin(115200);
   setupEC();
@@ -81,7 +85,7 @@ void loop() {
       debugPhData();
     }
     else {
-      Serial.println("Command Not Found");
+      Serial.println("#Command Not Found");
     }
   }
 
@@ -98,7 +102,15 @@ void loop() {
   sendECCommand(buffer);
   ec = getECResponse();
 
-  if (psi >= 90) {
-    disableRelay(4);
+  if (psi <= MINPRESSURE) {
+    enableRelay(5); //pump
+    }
+  if (psi >= MAXPRESSURE) {
+    disableRelay(5); //pump
+    }
+
+  if (psi >= EPRESSURE) {
+    enableRelay(4); //sprayers
+    disableRelay(5); // pump
     }
 }

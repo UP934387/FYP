@@ -1,13 +1,11 @@
 #include "psi_functions.h"
 
 PsiSensor PsiSensors[] = {A0, 150, 0, 4.0, 0.483};
-
 const float vPinMax = 5.00;
-
 
 void debugPSIData() {
   for (int i = 0; i < PRES; i++) {
-    Serial.print("Pressure: ");
+    Serial.print("#Pressure: ");
     Serial.print(i);
     Serial.print("|Pin: ");
     Serial.print(PsiSensors[i].pin);
@@ -23,13 +21,16 @@ void debugPSIData() {
 }
 
 float getPSI() {
-  float V, P;
-  V = analogRead(PsiSensors[0].pin) * vPinMax / 1024;     //Sensor output voltage
-  P = (V - PsiSensors[0].vOffset) * PsiSensors[0].PSImax / PsiSensors[0].vRange;     //Calculate water pressure
+  float voltage, pressure, voltage_compensated, v_p_step;
+  //Sensor output voltage
+  voltage = analogRead(PsiSensors[0].pin) * vPinMax / 1024;
+  //sensor no pressure voltage is offset. remove offset from current voltage
+  voltage_compensated = (voltage - PsiSensors[0].vOffset);
+  //create voltage/pressure step size based of the voltage range and max psi
+  v_p_step = PsiSensors[0].PSImax / PsiSensors[0].vRange;
+  //multiply compensated voltage by the voltage/pressure step size
+  pressure = voltage_compensated * v_p_step;
 
-  return (P < PsiSensors[0].PSImin) ? PsiSensors[0].PSImin : P; // prevent psi reading below min value
-}
-
-void configSensor(int id, PsiSensor newPsiSensor ) {
-  PsiSensors[id] = newPsiSensor;
+  // prevent psi reading below min value, clamp to min psi value
+  return (pressure < PsiSensors[0].PSImin) ? PsiSensors[0].PSImin : pressure;
 }
