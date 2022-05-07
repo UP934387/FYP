@@ -16,10 +16,10 @@ void setup() {
   Serial.begin(115200);
   setupEC();
   loadConfig();
+  enableRelay(4);
 }
 // COMMAND FORMAT
 // COMMAND
-// COMMAND;DATA
 // COMMAND;SUBCOMMAND;DATA
 
 // DATA FORMAT
@@ -39,6 +39,7 @@ void loop() {
     while (getValue(input, ';', i) != NULL && i < MAXINPUT) {
       // get word from string, until max size of array
       inputs[i] = getValue(input, ';', i);
+      //Serial.println(inputs[i]);
       i++;
     }
 
@@ -71,7 +72,7 @@ void loop() {
       caliPh(temp, dataptr);
     }
     else if (inputs[0] == "readeeprom") {
-      readEEPROM();
+      loadConfig();
     }
     else if (inputs[0] == "writeeeprom") {
       writeEEPROM();
@@ -102,7 +103,7 @@ void loop() {
   sendECCommand(buffer);
   ec = getECResponse();
 
-  if (psi <= MINPRESSURE) {
+  if (psi <= MINPRESSURE && level == 1) {
     enableRelay(5); //pump
     }
   if (psi >= MAXPRESSURE) {

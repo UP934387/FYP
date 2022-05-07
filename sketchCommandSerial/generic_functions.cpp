@@ -1,9 +1,9 @@
 #include <EEPROM.h>
 #include "generic_functions.h"
 
-byte EEPROMINIT = 104;
-// used to check if EEPROM has valid config. change if EEPROM Struct changes
-
+byte EEPROMINIT = 107;
+// used to check if EEPROM has valid config. 
+//change if EEPROM Struct changes
 void writeEEPROM() {
   Serial.println("#EEPROM WROTE");
   EEPROMstructure writeEEPROM;
@@ -96,25 +96,26 @@ void loadConfig() {
   }
 }
 
-String getValue(String data, char separator, int index)
-{
-  int found = 0;
-  // start (0) to end (-1) of String
-  int seperatorIndex[] = {0, -1};
-  int limit = data.length() - 1;
+String getValue(String data, char separator, int index) {
 
-  for (int i = 0; i <= limit && found <= index; i++) {
-    // loop until limit and have found the index of word requested
-    if (data.charAt(i) == separator || i == limit) {
-      // found seperator in String. or reached end of String
-      // increment number of found words
+  int found = 0;
+  String foundWord = "";
+
+  for (int i = 0; i <= data.length(); i++) {
+    // loop over characters in String to max length
+    if (data[i] == separator) {
+      // increment found counter if separator
       found++;
-      // update index of seperator 0 (start)
-      seperatorIndex[0] = seperatorIndex[1] + 1;
-      // update index of seperator 1 to loop index (end)
-      seperatorIndex[1] = (i == limit) ? i + 1 : i;
+    }
+    else if (found == index) {
+      // concatenate current char if found counter == index
+      foundWord.concat(data[i]);
+    }
+    else if (found > index) {
+      // break out of loop if found another separator
+      break;
     }
   }
-  // return if the word between seperators if found
-  return found > index ? data.substring(seperatorIndex[0], seperatorIndex[1]) : "";
+  // return the found word
+  return foundWord;
 }
